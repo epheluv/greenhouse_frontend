@@ -1,24 +1,25 @@
 <!-- src/components/SensorCharts/ZoneLineChart.vue -->
 <template>
-    <div class="chart-container">
-      <v-chart :option="chartOption" autoresize />
-      <div v-if="loading" class="loading-overlay">加载中...</div>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref, watch } from 'vue'
-  import { use } from 'echarts/core'
-  import { LineChart } from 'echarts/charts'
-  import { GridComponent, TooltipComponent, TitleComponent } from 'echarts/components'
-  import { CanvasRenderer } from 'echarts/renderers'
-  import VChart from 'vue-echarts'
-  import axios from 'axios'
-  import { useSensorStore } from '@/stores/sensorStore'
-  
-  use([LineChart, GridComponent, TooltipComponent, TitleComponent, CanvasRenderer])
-  
-  const store = useSensorStore()
+  <div class="chart-container">
+    <v-chart :option="chartOption" autoresize />
+    <div v-if="loading" class="loading-overlay">加载中...</div>
+  </div>
+</template>
+
+<script setup>
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { use } from 'echarts/core'
+import { LineChart } from 'echarts/charts'
+import { GridComponent, TooltipComponent, TitleComponent } from 'echarts/components'
+import { CanvasRenderer } from 'echarts/renderers'
+import VChart from 'vue-echarts'
+import axios from 'axios'
+import { useSensorStore } from '@/stores/sensorStore'
+
+use([LineChart, GridComponent, TooltipComponent, TitleComponent, CanvasRenderer])
+
+const store = useSensorStore()
+let refreshTimer = null // 新增定时器
 
 // 定义颜色映射
 const colorMap = {
@@ -34,17 +35,17 @@ const yAxisRangeMap = {
   co2: { min: 0, max: 1500 },       // 二氧化碳范围
 };
 
-  const getUnit = (type) => {
-    const units = {
-      temperature: '℃',
-      humidity: '%',
-      pressure: 'hPa',
-      co2: 'ppm'
-    }
-    return units[type] || ''
+const getUnit = (type) => {
+  const units = {
+    temperature: '℃',
+    humidity: '%',
+    pressure: 'hPa',
+    co2: 'ppm'
   }
+  return units[type] || ''
+}
 
-  const getBaseOption = function() {
+const getBaseOption = function () {
   const type = store.selectedType;
   const color = colorMap[type] || '#5470C6'; //默认颜色
   const range = yAxisRangeMap[type] || { min: 0, max: 100 }; // 默认范围
@@ -56,7 +57,7 @@ const yAxisRangeMap = {
     },
     tooltip: {
       trigger: 'axis',
-      formatter: function(params) {
+      formatter: function (params) {
         const date = new Date(params[0].value[0]);
         return `${date.toLocaleString()}<br/>${params[0].marker} ${params[0].seriesName}: ${params[0].value[1]}${getUnit(type)}`;
       },
@@ -65,7 +66,7 @@ const yAxisRangeMap = {
       type: 'time',
       axisLabel: {
         rotate: 45,
-        formatter: function(value) {
+        formatter: function (value) {
           return new Date(value).toLocaleTimeString();
         },
       },
@@ -93,60 +94,68 @@ const yAxisRangeMap = {
   };
 };
 
-  const chartOption = ref(getBaseOption())
-  const loading = ref(false)
-  
-  watch(() => [store.selectedType, store.selectedZone], async ([type, zone]) => {
-    if (!type || !zone) return
-    
-    try {
-      loading.value = true
+const chartOption = ref(getBaseOption())
+const loading = ref(false)
 
-      const newOption = getBaseOption()
+watch(() => [store.selectedType, store.selectedZone], fetchData, { immediate: true })
 
-      const res = await axios.get(`http://localhost:8080/api/sensors/${type}`, {
-        params: {
-          zone: zone,
-          limit: 20
-        }
-      })
-      
-      // 更新数据和配置
+async function fetchData() {
+  if (!store.selectedType || !store.selectedZone) return
+
+  try {
+    loading.value = true
+
+    const newOption = getBaseOption()
+
+    const res = await axios.get(`http://localhost:8080/api/sensors/${store.selectedType}`, {
+      params: {
+        zone: store.selectedZone,
+        limit: 20
+      }
+    })
+
+    // 更新数据和配置
     newOption.series[0].data = res.data.map(item => ({
       value: [item.timestamp, item.value]
     }))
-    
+
     chartOption.value = newOption // 整体替换配置对象
-    } catch (error) {
-      console.error('数据加载失败:', error)
-    } finally {
-      loading.value = false
-    }
-  }, { immediate: true })
-  
-
-  
-
-  </script>
-  
-  <style scoped>
-  .chart-container {
-    position: relative;
-    background: white;
-    border-radius: 8px;
-    padding: 15px;
-    height: 500px;
+  } catch (error) {
+    console.error('数据加载失败:', error)
+  } finally {
+    loading.value = false
   }
-  
-  .loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255,255,255,0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  </style>
+}
+
+// 新增定时刷新方法
+const startAutoRefresh = () => {
+  refreshTimer = setInterval(fetchData, 30000) // 每30秒刷新
+}
+
+// 生命周期钩子
+onMounted(startAutoRefresh)
+onUnmounted(() => clearInterval(refreshTimer))
+
+</script>
+
+<style scoped>
+.chart-container {
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  height: 500px;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

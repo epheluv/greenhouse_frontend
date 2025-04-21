@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, watch,onMounted,onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import VChart from 'vue-echarts'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'

@@ -1,19 +1,14 @@
 <template>
   <div class="zone-grid">
     <div v-for="(row, rowIndex) in zoneMatrix" :key="rowIndex" class="zone-row">
-      <div 
-        v-for="zone in row"
-        :key="zone"
-        class="zone-cell"
-        :class="{ active: store.selectedZone === zone }"
-        @click="store.setSelection(store.selectedType, zone)"
-      >
+      <div v-for="zone in row" :key="zone" class="zone-cell" :class="{ active: store.selectedZone === zone }"
+        @click="store.setSelection(store.selectedType, zone)">
         {{ zone }}
       </div>
     </div>
   </div>
 </template>
-  
+
 <script setup>
 import { useSensorStore } from '@/stores/sensorStore'
 
@@ -27,7 +22,7 @@ const zoneMatrix = [
   ['D1', 'D2']
 ]
 </script>
-  
+
 <style scoped>
 .zone-grid {
   background: white;

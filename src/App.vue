@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <BubbleBackground />
-    
+
     <div class="main-content">
       <SensorMenu />
-      
+
       <div class="dashboard-layout">
         <div class="heatmap-section">
           <SensorHeatmap />
         </div>
-        
+
         <div class="data-section">
           <ZoneSelector />
           <ZoneLineChart />
@@ -48,7 +48,7 @@ import ZoneSelector from '@/components/controls/ZoneSelector.vue'
 }
 
 .heatmap-section {
-  background: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 8px;
   padding: 20px;
 }
