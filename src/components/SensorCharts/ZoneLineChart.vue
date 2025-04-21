@@ -21,12 +21,12 @@ use([LineChart, GridComponent, TooltipComponent, TitleComponent, CanvasRenderer]
 const store = useSensorStore()
 let refreshTimer = null // 新增定时器
 
-// 定义颜色映射
+// 线图配色方案（调整后）
 const colorMap = {
-  temperature: '#EE6666', // 温度 - 红色
-  humidity: '#5470C6',    // 湿度 - 蓝色
-  pressure: '#91CC75',    // 气压 - 绿色
-  co2: '#606060',        // 二氧化碳 - 灰色 #A0A0A0
+  temperature: '#FF9F7C', // 温度 - 鲑鱼粉
+  humidity: '#6C8EB2',    // 湿度 - 灰蓝色
+  pressure: '#8AAA79',    // 气压 - 苔藓绿
+  co2: '#808080',        // 二氧化碳 - 中灰色
 };
 const yAxisRangeMap = {
   temperature: { min: 0, max: 40 },    // 温度范围

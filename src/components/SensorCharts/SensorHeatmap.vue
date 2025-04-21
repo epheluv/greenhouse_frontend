@@ -14,25 +14,25 @@ import axios from 'axios'
 
 use([CanvasRenderer, HeatmapChart, GridComponent, VisualMapComponent])
 
-// 热力图配色方案
+// 热力图配色方案（调整后）
 const HEATMAP_CONFIG = {
   temperature: {
-    colors: ['#FFEDA0', '#FEB24C', '#FC4E2A', '#E31A1C'],
+    colors: ['#FFF3DB', '#FFD8A8', '#FFB38A', '#E69575'], // 米白→浅橙→珊瑚粉→砖红
     min: 20,
     max: 40
   },
   humidity: {
-    colors: ['#E0F3F8', '#ABD9E9', '#74ADD1', '#4575B4'],
+    colors: ['#E8F4F8', '#B8D4E3', '#85B2C9', '#4E7C9B'], // 雾白→浅灰蓝→灰蓝→深灰蓝
     min: 30,
     max: 90
   },
   pressure: {
-    colors: ['#F7FCB9', '#ADDD8E', '#41AB5D', '#006837'],
+    colors: ['#EDF5E1', '#C7E2C3', '#8EB18A', '#5D8066'], // 浅薄荷→橄榄绿→苔藓绿→深橄榄
     min: 980,
     max: 1040
   },
   co2: {
-    colors: ['#E0E0E0', '#A0A0A0', '#606060', '#303030'],
+    colors: ['#F0F0F0', '#C0C4CC', '#909399', '#606266'], // 浅灰→银灰→中灰→炭灰
     min: 400,
     max: 2000
   }

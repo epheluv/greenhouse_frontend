@@ -43,8 +43,8 @@ export default {
       return {
         x: Math.random() * this.canvas.width,
         y: this.canvas.height + 50,
-        radius: Math.random() * 20 + 2,// 气泡大小范围
-        speed: Math.random() * 2 + 1,// 上升速度范围
+        radius: Math.random() * 60 + 2,// 气泡大小范围
+        speed: Math.random() * 1.5 + 1,// 上升速度范围
         opacity: Math.random() * 0.5 + 0.5,// 透明度范围
         phase: Math.random() * Math.PI * 2
       }
@@ -52,7 +52,7 @@ export default {
 
     updateBubbles() {
       // 随机生成新气泡
-      if (Math.random() < 0.05) {
+      if (Math.random() < 0.1) {
         this.bubbles.push(this.createBubble())
       }
 
@@ -60,8 +60,8 @@ export default {
       this.bubbles = this.bubbles.filter(bubble => {
         bubble.y -= bubble.speed
         bubble.phase += 0.02
-        bubble.x += Math.sin(bubble.phase) * 0.5  // 添加横向摆动
-        bubble.radius *= 0.99  // 逐渐缩小
+        bubble.x += Math.sin(bubble.phase) * 0.4  // 添加横向摆动
+        bubble.radius -= 0.2  // 逐渐缩小
 
         // 移除超出画布的气泡
         return bubble.y > -20 && bubble.radius > 0.5
@@ -101,5 +101,17 @@ export default {
   /* 确保在内容层下方 */
   pointer-events: none;
   /* 不阻挡鼠标事件 */
+}
+
+.bubble-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(
+    45deg,
+    hsl(210deg 80% 85% / 0.3) 0%,
+    hsl(280deg 60% 85% / 0.2) 100%
+  );
 }
 </style>

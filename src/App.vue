@@ -1,6 +1,9 @@
 <template>
   <div class="app-container">
-    <BubbleBackground />
+    <!-- 添加包裹层控制层级 -->
+    <div class="bubble-wrapper">
+      <BubbleBackground />
+    </div>
 
     <div class="main-content">
       <SensorMenu />
@@ -27,6 +30,18 @@ import ZoneLineChart from '@/components/SensorCharts/ZoneLineChart.vue'
 import ZoneSelector from '@/components/controls/ZoneSelector.vue'
 </script>
 
+<style>
+/* 全局样式 */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  /* 禁止全局滚动 */
+  height: 100%;
+}
+</style>
+
 <style scoped>
 .app-container {
   position: relative;
@@ -35,27 +50,111 @@ import ZoneSelector from '@/components/controls/ZoneSelector.vue'
 
 .main-content {
   position: relative;
-  padding: 20px;
+  padding: 30px 20px;
   max-width: 1400px;
   margin: 0 auto;
+  z-index: 2;
+}
+
+.bubble-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  /* 位于主内容之下 */
 }
 
 .dashboard-layout {
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 30px;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
+/* 浅色玻璃拟态 */
 .heatmap-section {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 8px;
-  padding: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.data-section {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .data-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+}
+
+/* 改良的卡片样式 */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 14px;
+  padding: 20px;
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.05),
+    0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+/* 字体与色彩调整 */
+.app-container {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: hsl(240deg 10% 30%);
+}
+
+/* 浅色滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+/* 响应式优化 */
+@media (max-width: 1024px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .glass-card {
+    padding: 16px;
+  }
+}
+
+/* 新增装饰元素 */
+.main-content::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle at 50% 50%,
+      rgba(200, 220, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
 }
 </style>
