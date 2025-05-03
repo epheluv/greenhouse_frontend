@@ -108,10 +108,8 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: linear-gradient(
-    45deg,
-    hsl(210deg 80% 85% / 0.3) 0%,
-    hsl(280deg 60% 85% / 0.2) 100%
-  );
+  background: linear-gradient(45deg,
+      hsl(210deg 80% 85% / 0.3) 0%,
+      hsl(280deg 60% 85% / 0.2) 100%);
 }
 </style>

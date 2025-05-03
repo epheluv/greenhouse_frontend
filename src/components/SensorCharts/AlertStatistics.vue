@@ -91,12 +91,12 @@ onMounted(async () => {
   padding: 20px;
   border-radius: 8px;
   text-align: center;
-  
+
   &.unresolved {
     background: rgba(255, 107, 107, 0.1);
     border: 1px solid rgba(255, 107, 107, 0.3);
   }
-  
+
   &.resolved {
     background: rgba(114, 177, 118, 0.1);
     border: 1px solid rgba(114, 177, 118, 0.3);
@@ -136,15 +136,23 @@ onMounted(async () => {
 
 .alert-meta {
   flex: 1;
-  
-  > span {
+
+  >span {
     display: inline-block;
     margin-right: 20px;
     font-size: 14px;
 
-    &.zone { width: 60px; }
-    &.type { width: 100px; }
-    &.value { width: 80px; }
+    &.zone {
+      width: 60px;
+    }
+
+    &.type {
+      width: 100px;
+    }
+
+    &.value {
+      width: 80px;
+    }
   }
 }
 
@@ -152,12 +160,12 @@ onMounted(async () => {
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 4px;
-  
+
   &.active {
     background: #fff3f3;
     color: #ff6b6b;
   }
-  
+
   &.resolved {
     background: #f0f9eb;
     color: #72b176;
