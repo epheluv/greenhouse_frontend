@@ -1,18 +1,17 @@
 <template>
   <div class="sensor-menu">
-    <div class="menu-item"
-      v-for="type in ['temperature', 'humidity', 'pressure', 'co2']"
-      :key="type"
+    <div class="menu-item" v-for="type in ['temperature', 'humidity', 'pressure', 'co2']" :key="type"
       :class="{ active: store.selectedType === type && store.selectedView === 'sensor' }"
       @click="handleSensorClick(type)">
       {{ getTypeName(type) }}
     </div>
 
-    <!-- 新增病斑巡检菜单项 -->
-    <div class="menu-item"
-         :class="{ active: store.selectedView === 'disease' }"
-         @click="store.setView('disease')">
+    <div class="menu-item" :class="{ active: store.selectedView === 'disease' }" @click="store.setView('disease')">
       病斑巡检
+    </div>
+
+    <div class="menu-item" :class="{ active: store.selectedView === 'alerts' }" @click="store.setView('alerts')">
+      告警统计
     </div>
   </div>
 </template>

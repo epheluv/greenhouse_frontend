@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <BubbleBackground />
-    
+
     <div class="main-content">
       <SensorMenu />
-      
+
       <!-- 根据视图类型显示不同内容 -->
       <Transition name="fade" mode="out-in">
         <template v-if="store.selectedView === 'sensor'">
@@ -22,6 +22,10 @@
         <template v-else-if="store.selectedView === 'disease'">
           <DiseaseInspection />
         </template>
+
+        <template v-else-if="store.selectedView === 'alerts'">
+          <AlertStatistics />
+        </template>
       </Transition>
     </div>
   </div>
@@ -35,6 +39,7 @@ import SensorHeatmap from '@/components/SensorCharts/SensorHeatmap.vue'
 import ZoneLineChart from '@/components/SensorCharts/ZoneLineChart.vue'
 import ZoneSelector from '@/components/controls/ZoneSelector.vue'
 import { useSensorStore } from '@/stores/sensorStore'
+import AlertStatistics from '@/components/SensorCharts/AlertStatistics.vue'
 
 const store = useSensorStore() // 必须显式获取 store 实例
 </script>
