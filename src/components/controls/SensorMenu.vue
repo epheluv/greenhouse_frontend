@@ -1,8 +1,18 @@
 <template>
   <div class="sensor-menu">
-    <div class="menu-item" v-for="type in ['temperature', 'humidity', 'pressure', 'co2']" :key="type"
-      :class="{ active: store.selectedType === type }" @click="store.setSelection(type, store.selectedZone)">
+    <div class="menu-item"
+      v-for="type in ['temperature', 'humidity', 'pressure', 'co2']"
+      :key="type"
+      :class="{ active: store.selectedType === type && store.selectedView === 'sensor' }"
+      @click="handleSensorClick(type)">
       {{ getTypeName(type) }}
+    </div>
+
+    <!-- 新增病斑巡检菜单项 -->
+    <div class="menu-item"
+         :class="{ active: store.selectedView === 'disease' }"
+         @click="store.setView('disease')">
+      病斑巡检
     </div>
   </div>
 </template>
@@ -11,6 +21,12 @@
 import { useSensorStore } from '@/stores/sensorStore'
 
 const store = useSensorStore()
+
+// 修改原有点击事件
+const handleSensorClick = (type) => {
+  store.setView('sensor') // 切换到传感器视图
+  store.setSelection(type, store.selectedZone) // 保持原有逻辑
+}
 
 const getTypeName = (type) => {
   const names = {

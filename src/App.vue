@@ -1,23 +1,28 @@
 <template>
   <div class="app-container">
-    <!-- 添加包裹层控制层级 -->
-    <div class="bubble-wrapper">
-      <BubbleBackground />
-    </div>
-
+    <BubbleBackground />
+    
     <div class="main-content">
       <SensorMenu />
+      
+      <!-- 根据视图类型显示不同内容 -->
+      <Transition name="fade" mode="out-in">
+        <template v-if="store.selectedView === 'sensor'">
+          <div class="dashboard-layout">
+            <div class="heatmap-section">
+              <SensorHeatmap />
+            </div>
+            <div class="data-section">
+              <ZoneSelector />
+              <ZoneLineChart />
+            </div>
+          </div>
+        </template>
 
-      <div class="dashboard-layout">
-        <div class="heatmap-section">
-          <SensorHeatmap />
-        </div>
-
-        <div class="data-section">
-          <ZoneSelector />
-          <ZoneLineChart />
-        </div>
-      </div>
+        <template v-else-if="store.selectedView === 'disease'">
+          <DiseaseInspection />
+        </template>
+      </Transition>
     </div>
   </div>
 </template>
@@ -25,9 +30,13 @@
 <script setup>
 import BubbleBackground from '@/components/BubbleBackground.vue'
 import SensorMenu from '@/components/controls/SensorMenu.vue'
+import DiseaseInspection from '@/components/SensorCharts/DiseaseInspection.vue' // 导入新组件
 import SensorHeatmap from '@/components/SensorCharts/SensorHeatmap.vue'
 import ZoneLineChart from '@/components/SensorCharts/ZoneLineChart.vue'
 import ZoneSelector from '@/components/controls/ZoneSelector.vue'
+import { useSensorStore } from '@/stores/sensorStore'
+
+const store = useSensorStore() // 必须显式获取 store 实例
 </script>
 
 <style>
@@ -39,6 +48,16 @@ body {
   overflow: hidden;
   /* 禁止全局滚动 */
   height: 100%;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
 

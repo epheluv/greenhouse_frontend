@@ -1,15 +1,15 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia';
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 
-// 创建 Vue 应用
-const app = createApp(App);
+const app = createApp(App)
 
-// 创建 Pinia 实例并挂载到 Vue 应用
-const pinia = createPinia();
-app.use(pinia);
+// 必须优先注册 Pinia
+const pinia = createPinia()
+app.use(pinia)
 
-// 挂载 Vue 应用
-app.mount('#app');
+// 后注册其他插件
 app.use(autoAnimatePlugin)
+
+app.mount('#app')
