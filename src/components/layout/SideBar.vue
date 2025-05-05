@@ -37,7 +37,7 @@ import { useSensorStore } from '@/stores/sensorStore'
 
 const store = useSensorStore()
 const isSensorMenuOpen = ref(true)
-const sensorTypes = ['temperature', 'humidity', 'pressure', 'co2']
+const sensorTypes = ['temperature', 'humidity', 'pressure', 'co2', 'lightIntensity']
 
 const toggleSensorMenu = () => {
   isSensorMenuOpen.value = !isSensorMenuOpen.value
@@ -53,7 +53,8 @@ const getTypeName = (type) => {
     temperature: '温度监测',
     humidity: '湿度分布',
     pressure: '气压变化',
-    co2: 'CO₂浓度'
+    co2: 'CO₂浓度',
+    lightIntensity: '光照强度'
   }
   return names[type] || type
 }

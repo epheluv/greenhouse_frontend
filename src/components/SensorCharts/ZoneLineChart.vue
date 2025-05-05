@@ -27,12 +27,14 @@ const colorMap = {
   humidity: '#6C8EB2',    // 湿度 - 灰蓝色
   pressure: '#8AAA79',    // 气压 - 苔藓绿
   co2: '#808080',        // 二氧化碳 - 中灰色
+  lightIntensity: '#FFFF00',  // 光照强度 - 纯黄色
 };
 const yAxisRangeMap = {
   temperature: { min: 0, max: 40 },    // 温度范围
   humidity: { min: 0, max: 100 },      // 湿度范围
   pressure: { min: 900, max: 1100 },   // 气压范围
   co2: { min: 0, max: 1500 },       // 二氧化碳范围
+  lightIntensity: { min: 0, max: 100000 }, // 光照强度范围
 };
 
 const getUnit = (type) => {
@@ -40,7 +42,8 @@ const getUnit = (type) => {
     temperature: '℃',
     humidity: '%',
     pressure: 'hPa',
-    co2: 'ppm'
+    co2: 'ppm',
+    lightIntensity: 'lux'
   }
   return units[type] || ''
 }
@@ -76,6 +79,19 @@ const getBaseOption = function () {
       name: getUnit(type),
       min: range.min,
       max: range.max,
+      axisLabel: {
+        formatter: (value) => {
+          // 大数值格式化
+          if (value >= 10000) {
+            return `${(value / 1000).toFixed(0)}k`;
+          }
+          if (value >= 1000) {
+            return `${(value / 1000).toFixed(1)}k`;
+          }
+          return value.toFixed(1);
+        },
+        margin: 0, // 增加标签边距
+      }
     },
     series: [
       {
@@ -143,7 +159,6 @@ onUnmounted(() => clearInterval(refreshTimer))
   position: relative;
   background: white;
   border-radius: 8px;
-  padding: 15px;
   height: 500px;
 }
 

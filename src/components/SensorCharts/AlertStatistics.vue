@@ -1,4 +1,3 @@
-<!-- AlertStatistics.vue -->
 <template>
   <div class="alert-stats">
     <div class="stats-header">
@@ -17,13 +16,27 @@
       </div>
     </div>
 
-    <div class="alert-list" v-if="alerts.length > 0">
-      <div class="alert-item" v-for="alert in alerts" :key="alert.id">
+    <div class="filters">
+      <div class="filter-item modern-select">
+        <label>传感器类型：</label>
+        <select v-model="selectedSensorType">
+          <option value="all">全部</option>
+          <option v-for="type in sensorTypes" :key="type" :value="type">
+            {{ getTypeName(type) }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="alert-list" v-if="filteredAlerts.length > 0">
+      <div class="alert-item" v-for="alert in filteredAlerts" :key="alert.id">
+        
         <div class="alert-meta">
           <span class="zone">{{ alert.zoneId }}</span>
           <span class="type">{{ alert.sensorType }}</span>
           <span class="value">{{ alert.triggerValue }}</span>
         </div>
+
         <div class="alert-status" :class="alert.status.toLowerCase()">
           {{ alert.status === 'ACTIVE' ? '未解决' : '已解决' }}
         </div>
@@ -37,13 +50,39 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
 const stats = ref({ resolved: 0, unresolved: 0 })
 const alerts = ref([])
 const timeRange = ref('')
+
+// 新增状态管理
+const selectedSensorType = ref('all')
+const sensorTypes = ref(['temperature', 'humidity', 'pressure', 'co2', 'lightIntensity'])
+
+// 计算属性处理筛选逻辑
+const filteredAlerts = computed(() => {
+  if (!alerts.value) return []
+  
+  return alerts.value.filter(alert => {
+    if (selectedSensorType.value === 'all') return true
+    return alert.sensorType === selectedSensorType.value
+  })
+})
+
+// 类型名称映射
+const getTypeName = (type) => {
+  const names = {
+    temperature: '温度',
+    humidity: '湿度', 
+    pressure: '气压',
+    co2: '二氧化碳',
+    lightIntensity: '光照'
+  }
+  return names[type] || type
+}
 
 onMounted(async () => {
   try {
@@ -67,10 +106,11 @@ onMounted(async () => {
 
 <style scoped>
 .alert-stats {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 12px;
-  padding: 24px;
-  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .stats-header {
@@ -82,41 +122,87 @@ onMounted(async () => {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-bottom: 30px;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 2rem;
 }
 
 .stat-card {
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
+  padding: 1.5rem;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
 
   &.unresolved {
-    background: rgba(255, 107, 107, 0.1);
-    border: 1px solid rgba(255, 107, 107, 0.3);
+    background: linear-gradient(135deg, rgba(255,107,107,0.1) 0%, rgba(255,107,107,0.05) 100%);
+    border: 1px solid rgba(255,107,107,0.15);
+    
+    &::after { background: #ff6b6b; }
   }
 
   &.resolved {
-    background: rgba(114, 177, 118, 0.1);
-    border: 1px solid rgba(114, 177, 118, 0.3);
+    background: linear-gradient(135deg, rgba(114,177,118,0.1) 0%, rgba(114,177,118,0.05) 100%);
+    border: 1px solid rgba(114,177,118,0.15);
+    
+    &::after { background: #72b176; }
   }
 }
 
 .stat-value {
-  font-size: 32px;
+  font-size: 2.25rem;
   font-weight: 600;
-  margin-bottom: 8px;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
 }
 
-.stat-label {
-  color: #666;
-  font-size: 14px;
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.filter-item select, .sensor-type {
+  width: 15%;
+  padding: 6px 50px 6px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 16px;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
 }
 
 .alert-list {
-  border-top: 1px solid #eee;
-  padding-top: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.alert-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.alert-list::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.05);
+  border-radius: 4px;
+}
+
+.alert-list::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 4px;
 }
 
 .alert-item {

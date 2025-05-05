@@ -24,7 +24,7 @@ const HEATMAP_CONFIG = {
   humidity: {
     colors: ['#E8F4F8', '#B8D4E3', '#85B2C9', '#4E7C9B'], // 雾白→浅灰蓝→灰蓝→深灰蓝
     min: 30,
-    max: 90
+    max: 100
   },
   pressure: {
     colors: ['#EDF5E1', '#C7E2C3', '#8EB18A', '#5D8066'], // 浅薄荷→橄榄绿→苔藓绿→深橄榄
@@ -35,6 +35,11 @@ const HEATMAP_CONFIG = {
     colors: ['#F0F0F0', '#C0C4CC', '#909399', '#606266'], // 浅灰→银灰→中灰→炭灰
     min: 400,
     max: 2000
+  },
+  lightIntensity: {
+    colors: ['#A9A9A9', '#FFFF00','#FFFF66','#FFFA66'],
+    min: 0,
+    max: 50000
   }
 }
 
